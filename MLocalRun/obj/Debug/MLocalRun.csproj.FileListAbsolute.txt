@@ -1,0 +1,14 @@
+C:\Users\adv\source\repos\MLocalRun\MLocalRun\bin\Debug\MLocalRun.exe.config
+C:\Users\adv\source\repos\MLocalRun\MLocalRun\bin\Debug\MLocalRun.exe
+C:\Users\adv\source\repos\MLocalRun\MLocalRun\bin\Debug\MLocalRun.pdb
+C:\Users\adv\source\repos\MLocalRun\MLocalRun\obj\Debug\MLocalRun.csprojAssemblyReference.cache
+C:\Users\adv\source\repos\MLocalRun\MLocalRun\obj\Debug\MLocalRun.Form1.resources
+C:\Users\adv\source\repos\MLocalRun\MLocalRun\obj\Debug\MLocalRun.Properties.Resources.resources
+C:\Users\adv\source\repos\MLocalRun\MLocalRun\obj\Debug\MLocalRun.csproj.GenerateResource.cache
+C:\Users\adv\source\repos\MLocalRun\MLocalRun\obj\Debug\MLocalRun.exe
+C:\Users\adv\source\repos\MLocalRun\MLocalRun\obj\Debug\MLocalRun.pdb
+C:\Users\adv\source\repos\MLocalRun\MLocalRun\obj\Debug\MLocalRun.DBSettup.resources
+C:\Users\adv\source\repos\MLocalRun\MLocalRun\bin\Debug\System.Management.Automation.dll
+C:\Users\adv\source\repos\MLocalRun\MLocalRun\bin\Debug\Microsoft.Management.Infrastructure.dll
+C:\Users\adv\source\repos\MLocalRun\MLocalRun\bin\Debug\System.Management.Automation.xml
+C:\Users\adv\source\repos\MLocalRun\MLocalRun\obj\Debug\MLocalRun.csproj.CopyComplete
