@@ -43,6 +43,7 @@
             this.txt_gitRepoPath = new System.Windows.Forms.TextBox();
             this.panel_GitLogin = new System.Windows.Forms.Panel();
             this.lbl_repoError = new System.Windows.Forms.Label();
+            this.txt_powershellOutput = new System.Windows.Forms.RichTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.panel_GitLogin.SuspendLayout();
             this.SuspendLayout();
@@ -147,7 +148,7 @@
             this.panel_GitLogin.Controls.Add(this.label5);
             this.panel_GitLogin.Controls.Add(this.txt_gitUsername);
             this.panel_GitLogin.Controls.Add(this.button2);
-            this.panel_GitLogin.Location = new System.Drawing.Point(27, 292);
+            this.panel_GitLogin.Location = new System.Drawing.Point(30, 147);
             this.panel_GitLogin.Name = "panel_GitLogin";
             this.panel_GitLogin.Size = new System.Drawing.Size(578, 100);
             this.panel_GitLogin.TabIndex = 15;
@@ -162,11 +163,22 @@
             this.lbl_repoError.TabIndex = 16;
             this.lbl_repoError.Text = "label1";
             // 
+            // txt_powershellOutput
+            // 
+            this.txt_powershellOutput.Enabled = false;
+            this.txt_powershellOutput.ForeColor = System.Drawing.SystemColors.WindowFrame;
+            this.txt_powershellOutput.Location = new System.Drawing.Point(27, 280);
+            this.txt_powershellOutput.Name = "txt_powershellOutput";
+            this.txt_powershellOutput.Size = new System.Drawing.Size(596, 96);
+            this.txt_powershellOutput.TabIndex = 17;
+            this.txt_powershellOutput.Text = "";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(669, 427);
+            this.Controls.Add(this.txt_powershellOutput);
             this.Controls.Add(this.lbl_repoError);
             this.Controls.Add(this.panel_GitLogin);
             this.Controls.Add(this.txt_gitRepoPath);
@@ -201,6 +213,7 @@
         private System.Windows.Forms.Button btn_GitRepoBrowse;
         private System.Windows.Forms.Panel panel_GitLogin;
         private System.Windows.Forms.Label lbl_repoError;
+        private System.Windows.Forms.RichTextBox txt_powershellOutput;
     }
 }
 
