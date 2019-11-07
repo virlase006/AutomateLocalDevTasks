@@ -1,6 +1,6 @@
 ﻿namespace MLocalRun
 {
-    partial class Form1
+    partial class GetGitRepo
     {
         /// <summary>
         /// Required designer variable.
@@ -165,10 +165,10 @@
             // 
             // txt_powershellOutput
             // 
-            this.txt_powershellOutput.Enabled = false;
             this.txt_powershellOutput.ForeColor = System.Drawing.SystemColors.WindowFrame;
             this.txt_powershellOutput.Location = new System.Drawing.Point(27, 280);
             this.txt_powershellOutput.Name = "txt_powershellOutput";
+            this.txt_powershellOutput.ReadOnly = true;
             this.txt_powershellOutput.Size = new System.Drawing.Size(596, 96);
             this.txt_powershellOutput.TabIndex = 17;
             this.txt_powershellOutput.Text = "";

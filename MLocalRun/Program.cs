@@ -16,7 +16,7 @@ namespace MLocalRun
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            Application.Run(new SetupRedis(@"C:\Users\virs\Desktop\Test\stylelabs.m"));
         }
     }
 }

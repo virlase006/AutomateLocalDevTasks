@@ -12,3 +12,17 @@ C:\Users\adv\source\repos\MLocalRun\MLocalRun\bin\Debug\System.Management.Automa
 C:\Users\adv\source\repos\MLocalRun\MLocalRun\bin\Debug\Microsoft.Management.Infrastructure.dll
 C:\Users\adv\source\repos\MLocalRun\MLocalRun\bin\Debug\System.Management.Automation.xml
 C:\Users\adv\source\repos\MLocalRun\MLocalRun\obj\Debug\MLocalRun.csproj.CopyComplete
+C:\Users\virs\Downloads\MLocalRun\AutomateLocalDevTasks\MLocalRun\bin\Debug\MLocalRun.exe.config
+C:\Users\virs\Downloads\MLocalRun\AutomateLocalDevTasks\MLocalRun\bin\Debug\MLocalRun.exe
+C:\Users\virs\Downloads\MLocalRun\AutomateLocalDevTasks\MLocalRun\bin\Debug\MLocalRun.pdb
+C:\Users\virs\Downloads\MLocalRun\AutomateLocalDevTasks\MLocalRun\bin\Debug\System.Management.Automation.dll
+C:\Users\virs\Downloads\MLocalRun\AutomateLocalDevTasks\MLocalRun\bin\Debug\Microsoft.Management.Infrastructure.dll
+C:\Users\virs\Downloads\MLocalRun\AutomateLocalDevTasks\MLocalRun\bin\Debug\System.Management.Automation.xml
+C:\Users\virs\Downloads\MLocalRun\AutomateLocalDevTasks\MLocalRun\obj\Debug\MLocalRun.csprojAssemblyReference.cache
+C:\Users\virs\Downloads\MLocalRun\AutomateLocalDevTasks\MLocalRun\obj\Debug\MLocalRun.Properties.Resources.resources
+C:\Users\virs\Downloads\MLocalRun\AutomateLocalDevTasks\MLocalRun\obj\Debug\MLocalRun.csproj.GenerateResource.cache
+C:\Users\virs\Downloads\MLocalRun\AutomateLocalDevTasks\MLocalRun\obj\Debug\MLocalRun.csproj.CopyComplete
+C:\Users\virs\Downloads\MLocalRun\AutomateLocalDevTasks\MLocalRun\obj\Debug\MLocalRun.exe
+C:\Users\virs\Downloads\MLocalRun\AutomateLocalDevTasks\MLocalRun\obj\Debug\MLocalRun.pdb
+C:\Users\virs\Downloads\MLocalRun\AutomateLocalDevTasks\MLocalRun\obj\Debug\MLocalRun.SetupRedis.resources
+C:\Users\virs\Downloads\MLocalRun\AutomateLocalDevTasks\MLocalRun\obj\Debug\MLocalRun.GetGitRepo.resources
