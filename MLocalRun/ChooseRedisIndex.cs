@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -15,6 +17,9 @@ namespace MLocalRun
         PowerShellScriptExecutor powerShellScriptExecutor;
         List<string> RedisIndexs;
         String GitRepo = "";
+
+        public int SetupElasticSearchScriptResult { get; private set; }
+
         public ChooseRedisIndex(List<string> keyspaces, string gitRepo)
         {
             GitRepo = gitRepo;
@@ -28,7 +33,7 @@ namespace MLocalRun
             txt_PathToElasticSearch.Text = @"C:\Users\virs\Downloads\elasticsearch\elasticsearch";
             comboBox1.Items.AddRange(RedisIndexs.ToArray());
             comboBox1.SelectedItem = comboBox1.Items[0]; ;
-           
+           File.Create
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -41,12 +46,26 @@ namespace MLocalRun
             var selectedDb = RedisIndexs.ElementAt(comboBox1.SelectedIndex);
             var dbIndex = selectedDb.Substring(2, 1);
             Task task1 = Task.Factory.StartNew(() => ExecuteSetupElasticSearchScript(dbIndex));
-            Task task2 = Task.Factory.StartNew(() => GetResult());
+            Task task2 = Task.Factory.StartNew(() => GetResult()).ContinueWith((result)=> {
+                if (result.Result == 1)
+                {
+                    DialogResult userAction = MessageBox.Show("Setup compelete.", "Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else 
+                {
+                    MessageBox.Show("Something went wrong", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            });
         }
 
-        private void GetResult()
+        private int GetResult()
         {
-            return;
+            while (SetupElasticSearchScriptResult == 0)
+            {
+                Thread.Sleep(1000);
+                SetupElasticSearchScriptResult = powerShellScriptExecutor.GetResult();
+            }
+            return SetupElasticSearchScriptResult;
         }
 
         private void ExecuteSetupElasticSearchScript(string dbIndex)

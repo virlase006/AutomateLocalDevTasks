@@ -20,6 +20,7 @@ namespace MLocalRun
         public SetupRedis(string PathToRepo)
         {
             GitRepoPath = PathToRepo;
+            
             InitializeComponent();
             powerShellScriptExecutor = new PowerShellScriptExecutor(this);
         }
@@ -62,6 +63,7 @@ namespace MLocalRun
             if (OUTPUT.Contains("ERROR"))
             {
                 MessageBox.Show($"Failed to setup redis: {OUTPUT}", "Failed to setup redis", MessageBoxButtons.OK, MessageBoxIcon.Error);
+              
             }
             else
             {
@@ -84,6 +86,7 @@ namespace MLocalRun
             }
             var chooseRedis = new ChooseRedisIndex(dbIndexes, GitRepoPath);
             chooseRedis.Show();
+            this.Visible = false;
         }
 
         private string ExtractAndParseBashCommand(string redisFilePathParsed)
@@ -105,38 +108,14 @@ namespace MLocalRun
             powerShellScriptExecutor.RunBashCommand("-c \"killall redis-server\"");
         }
 
-        private bool EvaluatePassOrFail(object getGitRepoScriptResult, PowershellConstants.ScriptStage getGitRepo)
-        {
-           return  true;
-        }
+       
 
-        private int GetResult()
-        {
-            return 1;
-        }
-
-        private void ExecuteSetupRedisScript()
-        {
-            var script = @"C:\Users\virs\Documents\PowerShell\CopyRedisFile.ps1";
-            var parameters = GetSetupRedisParamsParams();
-            powerShellScriptExecutor.ExecutePowerShellScript(script, this, parameters, txt_powershellOutput);
-        }
-
-        private List<KeyValuePair<string,string>> GetSetupRedisParamsParams()
-        {
-            var parameters = new List<KeyValuePair<string, string>>();
-            //  parameters.Add(new KeyValuePair<string, string>("PathToElasticSearch", txt_ESPath.Text));          
-         
-            parameters.Add(new KeyValuePair<string, string>("PathToRepo", GitRepoPath));
-            parameters.Add(new KeyValuePair<string, string>("PathToNewRedisFile", txt_RdbPath.Text));
-            parameters.Add(new KeyValuePair<string, string>("PathToRedis", txt_RedisPath.Text));
-            return parameters;
-        }
-
+    
         private void SetupRedis_Load(object sender, EventArgs e)
         {
             txt_RedisPath.Text = "/home/vds/redis-5.0.4/utils";
-             lbl_repoError.Visible = false;         
+             lbl_repoError.Visible = false;
+            button2.Enabled = false;
         }
 
         private void txt_RdbPath_TextChanged(object sender, EventArgs e)
@@ -145,12 +124,14 @@ namespace MLocalRun
             {
                 if (System.IO.File.Exists(txt_RdbPath.Text))
                 {
-                  
+                    button2.Enabled = true;
                     lbl_repoError.Visible = false;
                 }
                 else
                 {
-                    
+
+
+                    button2.Enabled = false;
                     lbl_repoError.Text = "Invalid path !!!";
                     lbl_repoError.Visible = true;
                     lbl_repoError.Show();
