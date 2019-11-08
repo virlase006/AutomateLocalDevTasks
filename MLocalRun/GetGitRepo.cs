@@ -32,7 +32,7 @@ namespace MLocalRun
 
         private void button2_Click(object sender, EventArgs e)
         {
-            configJson["usnername"] = txt_gitUsername.Text;
+            configJson["username"] = txt_gitUsername.Text;
             configJson["gitRepoPath"] = txt_gitRepoPath.Text;
             Task task1 = Task.Factory.StartNew(() => ExecuteGetGitRepoScript());
             Task task2 = Task.Factory.StartNew(() => GetResult()).ContinueWith((result) =>
@@ -94,7 +94,7 @@ namespace MLocalRun
 
         private void ExecuteGetGitRepoScript()
         {
-            var script = @"C:\Users\virs\Documents\PowerShell\GetGitRepo.ps1";
+            var script = @"../../../Scripts/GetGitRepo.ps1";
             var parameters = GetGitRepoScriptParams();
             powerShellScriptExecutor.ExecutePowerShellScript(script, this, parameters, txt_powershellOutput);
         }

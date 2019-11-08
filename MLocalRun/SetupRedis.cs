@@ -94,7 +94,7 @@ namespace MLocalRun
 
         private string ExtractAndParseBashCommand(string redisFilePathParsed)
         {
-            var bashScritp = System.IO.File.ReadAllText(@"C:\Users\virs\Documents\PowerShell\CopyRedisFile.ps1");
+            var bashScritp = System.IO.File.ReadAllText(@"../../../Scripts/CopyRedisFile.ps1");
             bashScritp = bashScritp.Replace("bash", "");
             bashScritp = bashScritp.Replace("PathToRedis", txt_RedisPath.Text.Replace("\\","/"));
             bashScritp =  bashScritp.Replace("BashPath", redisFilePathParsed.Replace("\\","/"));

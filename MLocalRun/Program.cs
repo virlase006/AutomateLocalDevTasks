@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -15,11 +16,12 @@ namespace MLocalRun
         static void Main()
         {
             JsonHelper jsonHelper = new JsonHelper();
-            var configJson = jsonHelper.ReadJsonFromFile(@"C:\Users\adv\source\repos\vdsGitHub\AutomateLocalDevTasks\MLocalRun\configuration.json");
+            var jsonFile = ConfigurationManager.AppSettings.Get("jsonFile");     
+            var configJson = jsonHelper.ReadJsonFromFile(jsonFile);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
           //  Application.Run(new SetupRedis("C://Users/virs/Desktop/Test/stylelabs.m"));
-            Application.Run(new GetGitRepo());
+            Application.Run(new GetGitRepo(configJson));
         }
     }
 }

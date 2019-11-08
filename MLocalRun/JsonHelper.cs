@@ -27,7 +27,10 @@ namespace MLocalRun
         {
             using (StreamWriter file = File.CreateText(configFile))
             {
-                JsonSerializer serializer = new JsonSerializer();
+                JsonSerializer serializer = new JsonSerializer
+                {
+                    Formatting = Formatting.Indented
+                };
                 serializer.Serialize(file, configJson);
             }
             return true;

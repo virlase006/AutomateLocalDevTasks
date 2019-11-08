@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.IO;
@@ -50,13 +51,28 @@ namespace MLocalRun
 
         private void button1_Click(object sender, EventArgs e)
         {
+            configJson["pathToElasticsearch"] = txt_PathToElasticSearch.Text;
             var selectedDb = RedisIndexs.ElementAt(comboBox1.SelectedIndex);
             var dbIndex = selectedDb.Substring(2, 1);
             Task task1 = Task.Factory.StartNew(() => ExecuteSetupElasticSearchScript(dbIndex));
             Task task2 = Task.Factory.StartNew(() => GetResult()).ContinueWith((result)=> {
                 if (result.Result == 1)
                 {
-                    DialogResult userAction = MessageBox.Show("Setup compelete.", "Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    DialogResult userAction = MessageBox.Show("Setup compelete. Do you want to save the new configuration? ", "Done", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+                    if (userAction == DialogResult.Yes)
+                    {
+                        JsonHelper jsonHelper = new JsonHelper();
+                        jsonHelper.WriteJsonFile(ConfigurationManager.AppSettings.Get("jsonFile").ToString(), configJson);
+                    }
+                    else 
+                    {
+                        this.Invoke((MethodInvoker)delegate
+                        {
+
+                            this.Close();
+                        });
+
+                    }
                 }
                 else 
                 {
@@ -77,7 +93,7 @@ namespace MLocalRun
 
         private void ExecuteSetupElasticSearchScript(string dbIndex)
         {
-            var script = @"C:\Users\virs\Documents\PowerShell\SetupElasticSearch.ps1";
+            var script = @"../../../Scripts/SetupElasticSearch.ps1";
             var parameters = GetElasticSearchScriptParams(dbIndex);
             powerShellScriptExecutor.ExecutePowerShellScript(script, this, parameters, txt_powershellOutput);
 
