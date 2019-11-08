@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -13,14 +14,15 @@ namespace MLocalRun
 {
     public partial class SetupRedis : Form
     {
+        JObject configJson;
         int GetRedisSetupResult;
         PowerShellScriptExecutor powerShellScriptExecutor;
         string GitRepoPath = "";
 
-        public SetupRedis(string PathToRepo)
+        public SetupRedis(JObject configJson)
         {
-            GitRepoPath = PathToRepo;
-            
+            this.configJson = configJson;
+            GitRepoPath = configJson["gitRepoPath"].ToString();
             InitializeComponent();
             powerShellScriptExecutor = new PowerShellScriptExecutor(this);
         }
@@ -44,9 +46,10 @@ namespace MLocalRun
         }
         private void button2_Click(object sender, EventArgs e)
         {
+            configJson["pathToRedis"] = txt_RedisPath.Text;
+
             if (IsRedisRunning())
             {
-
                 txt_powershellOutput.AppendText("\n Killing running instance of redis");
                 KillRedis();
             }
@@ -84,7 +87,7 @@ namespace MLocalRun
                     dbIndexes.Add(keyspace);
                 }
             }
-            var chooseRedis = new ChooseRedisIndex(dbIndexes, GitRepoPath);
+            var chooseRedis = new ChooseRedisIndex(dbIndexes, configJson);
             chooseRedis.Show();
             this.Visible = false;
         }
@@ -108,14 +111,16 @@ namespace MLocalRun
             powerShellScriptExecutor.RunBashCommand("-c \"killall redis-server\"");
         }
 
-       
 
-    
         private void SetupRedis_Load(object sender, EventArgs e)
         {
-            txt_RedisPath.Text = "/home/vds/redis-5.0.4/utils";
-             lbl_repoError.Visible = false;
-            button2.Enabled = false;
+            if (!String.IsNullOrEmpty(configJson.GetValue("pathToRedis").ToString()))
+            {
+                txt_RedisPath.Text = configJson.GetValue("pathToRedis").ToString();
+            }
+        
+           // txt_RedisPath.Text = "/home/vds/redis-5.0.4/utils";
+             lbl_repoError.Visible = false;         
         }
 
         private void txt_RdbPath_TextChanged(object sender, EventArgs e)

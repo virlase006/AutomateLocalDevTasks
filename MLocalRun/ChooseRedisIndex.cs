@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -14,15 +15,17 @@ namespace MLocalRun
 {
     public partial class ChooseRedisIndex : Form
     {
+        JObject configJson;
         PowerShellScriptExecutor powerShellScriptExecutor;
         List<string> RedisIndexs;
         String GitRepo = "";
 
         public int SetupElasticSearchScriptResult { get; private set; }
 
-        public ChooseRedisIndex(List<string> keyspaces, string gitRepo)
+        public ChooseRedisIndex(List<string> keyspaces, JObject configJson)
         {
-            GitRepo = gitRepo;
+            this.configJson = configJson;
+            GitRepo = configJson["gitRepoPath"].ToString();
             powerShellScriptExecutor = new PowerShellScriptExecutor(this);
             RedisIndexs = keyspaces;
             InitializeComponent();
@@ -30,10 +33,14 @@ namespace MLocalRun
 
         private void ChooseRedisIndex_Load(object sender, EventArgs e)
         {
-            txt_PathToElasticSearch.Text = @"C:\Users\virs\Downloads\elasticsearch\elasticsearch";
+            if (!String.IsNullOrEmpty(configJson.GetValue("pathToElasticsearch").ToString()))
+            {
+                txt_PathToElasticSearch.Text = configJson.GetValue("pathToElasticsearch").ToString();
+            }
+            //txt_PathToElasticSearch.Text = @"C:\Users\virs\Downloads\elasticsearch\elasticsearch";
             comboBox1.Items.AddRange(RedisIndexs.ToArray());
             comboBox1.SelectedItem = comboBox1.Items[0]; ;
-           File.Create
+         
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
