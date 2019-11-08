@@ -13,23 +13,27 @@ using System.Management.Automation;
 using System.Collections.ObjectModel;
 using System.Threading;
 using System.Management.Automation.Runspaces;
+using Newtonsoft.Json.Linq;
 
 namespace MLocalRun
 {
     public partial class GetGitRepo : Form
     {
-       
+        private JObject configJson;
         private int GetGitRepoScriptResult = 0;
         private PowerShellScriptExecutor powerShellScriptExecutor;
-        public GetGitRepo()
-
-        {  // create Powershell runspace
-            powerShellScriptExecutor = new PowerShellScriptExecutor(this);          
+        public GetGitRepo(JObject jObject)
+        {
+            // create Powershell runspace
+            configJson = jObject;
+            powerShellScriptExecutor = new PowerShellScriptExecutor(this);
             InitializeComponent();
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
+            configJson["usnername"] = txt_gitUsername.Text;
+            configJson["gitRepoPath"] = txt_gitRepoPath.Text;
             Task task1 = Task.Factory.StartNew(() => ExecuteGetGitRepoScript());
             Task task2 = Task.Factory.StartNew(() => GetResult()).ContinueWith((result) =>
             {
@@ -40,7 +44,7 @@ namespace MLocalRun
                 }
                 else
                 {
-                   DialogResult userAction =  MessageBox.Show("Get git repo failed. Make sure you dont have any uncommit changes. Click Try Again to force checkout or cancel and save changes before checkout.", "Git checkout failed", MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Error);
+                    DialogResult userAction = MessageBox.Show("Get git repo failed. Make sure you dont have any uncommit changes. Click Try Again to force checkout or cancel and save changes before checkout.", "Git checkout failed", MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Error);
                     if (userAction == DialogResult.Abort)
                     {
                         GetGitRepoScriptResult = 0;
@@ -57,9 +61,9 @@ namespace MLocalRun
                     }
                 }
             });
-           
-            
-           
+
+
+
         }
 
         private int GetResult()
@@ -77,15 +81,15 @@ namespace MLocalRun
             this.Invoke((MethodInvoker)delegate
             {
                 // close the form on the forms thread
-              
-                var redisSetup = new SetupRedis(txt_gitRepoPath.Text);
+
+                var redisSetup = new SetupRedis(configJson);
                 // redisSetup.Closed += (s, args) => this.Close();
                 redisSetup.Show();
                 redisSetup.StartPosition = this.StartPosition;
-                  this.Hide();
+                this.Hide();
             });
-            
-          
+
+
         }
 
         private void ExecuteGetGitRepoScript()
@@ -103,12 +107,12 @@ namespace MLocalRun
                     || (getGitScriptResult == Convert.ToInt32(PowershellConstants.GetGitRepoResponseCodes.NewRepoCheckoutSucceed))) ? true : false;
 
             }
-            else 
+            else
             {
                 return true;
             }
 
-      
+
         }
 
         private List<KeyValuePair<string, string>> GetGitRepoScriptParams()
@@ -123,7 +127,7 @@ namespace MLocalRun
 
         }
 
-       
+
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
@@ -144,6 +148,15 @@ namespace MLocalRun
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            if (!String.IsNullOrEmpty(configJson.GetValue("username").ToString()))
+            {
+                txt_gitUsername.Text = configJson.GetValue("username").ToString();
+            }
+            if (!String.IsNullOrEmpty(configJson.GetValue("gitRepoPath").ToString()))
+            {
+                txt_gitRepoPath.Text = configJson.GetValue("gitRepoPath").ToString();
+            }
+
             lbl_repoError.Visible = false;
             check_DoYouHaveGit.Checked = true;
             txt_gitUsername.Parent = panel_GitLogin;
@@ -157,18 +170,23 @@ namespace MLocalRun
             {
                 panel_GitLogin.Show();
             }
+            ValidatePath();
         }
 
         private void btn_GitRepoBrowse_Click(object sender, EventArgs e)
         {
-          txt_gitRepoPath.Text =  PowershellConstants.OpenFolderDailogAndGetPath();
+            txt_gitRepoPath.Text = PowershellConstants.OpenFolderDailogAndGetPath();
         }
 
-       
+
 
         private void txt_gitRepoPath_TextChanged(object sender, EventArgs e)
         {
+            ValidatePath();
+        }
 
+        private void ValidatePath()
+        {
             if (!String.IsNullOrEmpty(txt_gitRepoPath.Text))
             {
                 if (Directory.Exists(txt_gitRepoPath.Text))

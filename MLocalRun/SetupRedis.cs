@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -13,13 +14,15 @@ namespace MLocalRun
 {
     public partial class SetupRedis : Form
     {
+        JObject configJson;
         int GetRedisSetupResult;
         PowerShellScriptExecutor powerShellScriptExecutor;
         string GitRepoPath = "";
 
-        public SetupRedis(string PathToRepo)
+        public SetupRedis(JObject configJson)
         {
-            GitRepoPath = PathToRepo;
+            this.configJson = configJson;
+            GitRepoPath = configJson["gitRepoPath"].ToString();
             InitializeComponent();
             powerShellScriptExecutor = new PowerShellScriptExecutor(this);
         }
@@ -43,9 +46,10 @@ namespace MLocalRun
         }
         private void button2_Click(object sender, EventArgs e)
         {
+            configJson["pathToRedis"] = txt_RedisPath.Text;
+
             if (IsRedisRunning())
             {
-
                 txt_powershellOutput.AppendText("\n Killing running instance of redis");
                 KillRedis();
             }
@@ -82,7 +86,7 @@ namespace MLocalRun
                     dbIndexes.Add(keyspace);
                 }
             }
-            var chooseRedis = new ChooseRedisIndex(dbIndexes, GitRepoPath);
+            var chooseRedis = new ChooseRedisIndex(dbIndexes, configJson);
             chooseRedis.Show();
         }
 
@@ -105,37 +109,15 @@ namespace MLocalRun
             powerShellScriptExecutor.RunBashCommand("-c \"killall redis-server\"");
         }
 
-        private bool EvaluatePassOrFail(object getGitRepoScriptResult, PowershellConstants.ScriptStage getGitRepo)
-        {
-           return  true;
-        }
-
-        private int GetResult()
-        {
-            return 1;
-        }
-
-        private void ExecuteSetupRedisScript()
-        {
-            var script = @"C:\Users\virs\Documents\PowerShell\CopyRedisFile.ps1";
-            var parameters = GetSetupRedisParamsParams();
-            powerShellScriptExecutor.ExecutePowerShellScript(script, this, parameters, txt_powershellOutput);
-        }
-
-        private List<KeyValuePair<string,string>> GetSetupRedisParamsParams()
-        {
-            var parameters = new List<KeyValuePair<string, string>>();
-            //  parameters.Add(new KeyValuePair<string, string>("PathToElasticSearch", txt_ESPath.Text));          
-         
-            parameters.Add(new KeyValuePair<string, string>("PathToRepo", GitRepoPath));
-            parameters.Add(new KeyValuePair<string, string>("PathToNewRedisFile", txt_RdbPath.Text));
-            parameters.Add(new KeyValuePair<string, string>("PathToRedis", txt_RedisPath.Text));
-            return parameters;
-        }
 
         private void SetupRedis_Load(object sender, EventArgs e)
         {
-            txt_RedisPath.Text = "/home/vds/redis-5.0.4/utils";
+            if (!String.IsNullOrEmpty(configJson.GetValue("pathToRedis").ToString()))
+            {
+                txt_RedisPath.Text = configJson.GetValue("pathToRedis").ToString();
+            }
+        
+           // txt_RedisPath.Text = "/home/vds/redis-5.0.4/utils";
              lbl_repoError.Visible = false;         
         }
 

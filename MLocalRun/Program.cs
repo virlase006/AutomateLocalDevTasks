@@ -14,9 +14,11 @@ namespace MLocalRun
         [STAThread]
         static void Main()
         {
+            JsonHelper jsonHelper = new JsonHelper();
+            var configJson = jsonHelper.ReadJsonFromFile(@"C:\Users\adv\source\repos\vdsGitHub\AutomateLocalDevTasks\MLocalRun\configuration.json");
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new ChooseRedisIndex(new List<string>() { "db1:keys=28270,expires=0,avg_ttl=0" },@"C:\Users\virs\Desktop\Test\stylelabs.m"));
+            Application.Run(new ChooseRedisIndex(new List<string>() { "1","2"} ,configJson));
         }
     }
 }
