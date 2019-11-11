@@ -39,7 +39,7 @@ namespace MLocalRun
             bool isRuning = false;
             return Task.Factory.StartNew(() => bashScriptExecutor.ExecuteScript("-c \"" + "redis-cli ping" + "\"")).ContinueWith((r) =>
             {
-                var text = SafeReadTextBox();
+                var text = SafeReadTextBox(txt_powershellOutput);
                 isRuning = text.Contains("PONG");
 
             }).ContinueWith((r) =>
@@ -48,22 +48,22 @@ namespace MLocalRun
             }).Result;
 
         }
-        private void SafeWriteTextBox(string text)
+        private void SafeWriteTextBox(RichTextBox txtBox, string text)
         {
 
-            txt_powershellOutput.Invoke((MethodInvoker)delegate
+            txtBox.Invoke((MethodInvoker)delegate
             {
-                txt_powershellOutput.AppendText(text);
+                txtBox.AppendText(text);
 
             });
 
         }
-        private string SafeReadTextBox()
+        private string SafeReadTextBox(RichTextBox txtBox)
         {
             string text = "";
-            txt_powershellOutput.Invoke((MethodInvoker)delegate
+            txtBox.Invoke((MethodInvoker)delegate
             {
-                text = txt_powershellOutput.Text;
+                text = txtBox.Text;
             });
             return text;
         }
@@ -75,14 +75,14 @@ namespace MLocalRun
 
                 if (result.Result)
                 {
-                    SafeWriteTextBox("\n Killing running instance of redis");
-                    //  KillRedis();
+                    SafeWriteTextBox(txt_powershellOutput,"\n Killing running instance of redis");
+                    KillRedis();
                     string redisFilePathParsed = ParseWindowsPathToBashPath(txt_RdbPath.Text);
                     var command = ExtractAndParseBashCommand(redisFilePathParsed);
                     Task.Factory.StartNew(() => bashScriptExecutor.ExecuteScript(command)).ContinueWith((r) =>
                     {
 
-                        ProcessOutput(SafeReadTextBox());
+                        ProcessOutput(SafeReadTextBox(txt_powershellOutput));
                     }
                      );
 
@@ -107,17 +107,17 @@ namespace MLocalRun
             }
             else
             {
-                SafeWriteTextBox("\n" + output);
+                SafeWriteTextBox(txt_powershellOutput , "\n" + output);
                 ChooseRedisIndex();
             }
         }
 
         private void ChooseRedisIndex()
         {
-            SafeWriteTextBox( "");
+            SafeWriteTextBox(txt_powershellOutput, "");
             var keySpaces = bashScriptExecutor.ExecuteScript("-c \"redis-cli info KeySpace\"");
 
-            var keySpacesArray = SafeReadTextBox().Split('\n').ToList<string>();
+            var keySpacesArray = SafeReadTextBox(txt_powershellOutput).Split('\n').ToList<string>();
             List<string> dbIndexes = new List<string>();
             foreach (var keyspace in keySpacesArray)
             {

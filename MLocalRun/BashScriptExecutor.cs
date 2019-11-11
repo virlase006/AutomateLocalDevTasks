@@ -62,7 +62,11 @@ namespace MLocalRun
         {
             if (!String.IsNullOrEmpty(e.Data))
             {
-                OutputTextBox.AppendText ( "\n" + e.Data);
+                OutputTextBox.Invoke((MethodInvoker)delegate
+                {
+
+                    OutputTextBox.AppendText("\n" + e.Data);
+                });
 
                 ((Process)sender).Kill();
             }
