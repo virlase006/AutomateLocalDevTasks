@@ -11,7 +11,7 @@ IF($RepoExist -eq "1")
 {
 Write-Host "Getting git repo " -ForegroundColor White
 git fetch "https://$USERNAME@bitbucket.org/stylelabsdev/stylelabs.m.git"
-$Output = git checkout $VERSION
+$Output = git checkout $VERSION -f
 Write-Host "Testingl........ " $Output;
 IF([string]::IsNullOrEmpty($Output))
 {
@@ -27,7 +27,7 @@ ELSE
 Write-Host "New Repo"
 git clone "https://$USERNAME@bitbucket.org/stylelabsdev/stylelabs.m.git"
 cd stylelabs.m
-git checkout $VERSION 
+git checkout $VERSION -f
 IF([string]::IsNullOrEmpty($Output))
 {
 return -2

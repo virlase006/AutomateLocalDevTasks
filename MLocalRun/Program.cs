@@ -16,11 +16,10 @@ namespace MLocalRun
         static void Main()
         {
             JsonHelper jsonHelper = new JsonHelper();
-            var jsonFile = ConfigurationManager.AppSettings.Get("jsonFile");     
+            var jsonFile = ConfigurationManager.AppSettings.Get("jsonFile");
             var configJson = jsonHelper.ReadJsonFromFile(jsonFile);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-          //  Application.Run(new SetupRedis("C://Users/virs/Desktop/Test/stylelabs.m"));
             Application.Run(new GetGitRepo(configJson));
         }
     }

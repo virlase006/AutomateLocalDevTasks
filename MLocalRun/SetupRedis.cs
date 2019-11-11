@@ -15,8 +15,7 @@ namespace MLocalRun
     public partial class SetupRedis : Form
     {
         JObject configJson;
-        int GetRedisSetupResult;
-        PowerShellScriptExecutor powerShellScriptExecutor;
+        IScriptExecutor bashScriptExecutor;
         string GitRepoPath = "";
 
         public SetupRedis(JObject configJson)
@@ -24,62 +23,102 @@ namespace MLocalRun
             this.configJson = configJson;
             GitRepoPath = configJson["gitRepoPath"].ToString();
             InitializeComponent();
-            powerShellScriptExecutor = new PowerShellScriptExecutor(this);
+
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-         //   txt_ESPath.Text = PowershellConstants.OpenFolderDailogAndGetPath();
-        }
+
 
         private void button_browseRedisFile_Click(object sender, EventArgs e)
         {
-            txt_RdbPath.Text = PowershellConstants.OpenFileAndGetPath("rdb");
+            txt_RdbPath.Text = Utils.OpenFileAndGetPath("rdb");
         }
 
         private bool IsRedisRunning()
         {
+            bashScriptExecutor = new BashScriptExecutor(txt_powershellOutput);
+            bool isRuning = false;
+            return Task.Factory.StartNew(() => bashScriptExecutor.ExecuteScript("-c \"" + "redis-cli ping" + "\"")).ContinueWith((r) =>
+            {
+                var text = SafeReadTextBox();
+                isRuning = text.Contains("PONG");
 
-            txt_powershellOutput.AppendText("\n Checking if redis already running");
-            return powerShellScriptExecutor.RunBashCommand("-c \"" + "redis-cli ping" + "\"") .Contains( "PONG" )? true : false;
-        
+            }).ContinueWith((r) =>
+            {
+                return isRuning;
+            }).Result;
+
+        }
+        private void SafeWriteTextBox(string text)
+        {
+
+            txt_powershellOutput.Invoke((MethodInvoker)delegate
+            {
+                txt_powershellOutput.AppendText(text);
+
+            });
+
+        }
+        private string SafeReadTextBox()
+        {
+            string text = "";
+            txt_powershellOutput.Invoke((MethodInvoker)delegate
+            {
+                text = txt_powershellOutput.Text;
+            });
+            return text;
         }
         private void button2_Click(object sender, EventArgs e)
         {
             configJson["pathToRedis"] = txt_RedisPath.Text;
-
-            if (IsRedisRunning())
+            Task.Factory.StartNew(() => IsRedisRunning()).ContinueWith((result) =>
             {
-                txt_powershellOutput.AppendText("\n Killing running instance of redis");
-                KillRedis();
-            }
 
-            string redisFilePathParsed = ParseWindowsPathToBashPath(txt_RdbPath.Text);
-            var command = ExtractAndParseBashCommand(redisFilePathParsed);
-            var output = powerShellScriptExecutor.RunBashCommand(command);
-            ProcessOutput(output);
+                if (result.Result)
+                {
+                    SafeWriteTextBox("\n Killing running instance of redis");
+                    //  KillRedis();
+                    string redisFilePathParsed = ParseWindowsPathToBashPath(txt_RdbPath.Text);
+                    var command = ExtractAndParseBashCommand(redisFilePathParsed);
+                    Task.Factory.StartNew(() => bashScriptExecutor.ExecuteScript(command)).ContinueWith((r) =>
+                    {
+
+                        ProcessOutput(SafeReadTextBox());
+                    }
+                     );
+
+                }
+            });
+
+
+
+
+
 
         }
 
-        private void ProcessOutput(string OUTPUT)
+        private void ProcessOutput(string output)
         {
-            if (OUTPUT.Contains("ERROR"))
+
+            if (output.Contains("ERROR"))
             {
-                MessageBox.Show($"Failed to setup redis: {OUTPUT}", "Failed to setup redis", MessageBoxButtons.OK, MessageBoxIcon.Error);
-              
+                output = output.Substring(output.IndexOf("ERROR"));
+                MessageBox.Show($"Failed to setup redis: {output}", "Failed to setup redis", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
             }
             else
             {
-                txt_powershellOutput.AppendText("\n" + OUTPUT);
+                SafeWriteTextBox("\n" + output);
                 ChooseRedisIndex();
             }
         }
 
         private void ChooseRedisIndex()
         {
-            var keySpaces = powerShellScriptExecutor.RunBashCommand("-c \"redis-cli info KeySpace\"");
-            var keySpacesArray = keySpaces.Split('\n').ToList<string>();
-            List<string> dbIndexes = new List<string>() ;
+            SafeWriteTextBox( "");
+            var keySpaces = bashScriptExecutor.ExecuteScript("-c \"redis-cli info KeySpace\"");
+
+            var keySpacesArray = SafeReadTextBox().Split('\n').ToList<string>();
+            List<string> dbIndexes = new List<string>();
             foreach (var keyspace in keySpacesArray)
             {
                 if (keyspace.Contains("db"))
@@ -87,28 +126,38 @@ namespace MLocalRun
                     dbIndexes.Add(keyspace);
                 }
             }
-            var chooseRedis = new ChooseRedisIndex(dbIndexes, configJson);
-            chooseRedis.Show();
-            this.Visible = false;
+            
+            this.Invoke((MethodInvoker)delegate
+            {
+                // close the form on the forms thread
+
+                var chooseRedis = new ChooseRedisIndex(dbIndexes, configJson);
+                chooseRedis.Show();              
+                this.Hide();
+            });
         }
 
         private string ExtractAndParseBashCommand(string redisFilePathParsed)
         {
             var bashScritp = System.IO.File.ReadAllText(@"../../../Scripts/CopyRedisFile.ps1");
             bashScritp = bashScritp.Replace("bash", "");
-            bashScritp = bashScritp.Replace("PathToRedis", txt_RedisPath.Text.Replace("\\","/"));
-            bashScritp =  bashScritp.Replace("BashPath", redisFilePathParsed.Replace("\\","/"));
+            bashScritp = bashScritp.Replace("PathToRedis", txt_RedisPath.Text.Replace("\\", "/"));
+            bashScritp = bashScritp.Replace("BashPath", redisFilePathParsed.Replace("\\", "/"));
             return bashScritp;
         }
 
         private string ParseWindowsPathToBashPath(string windowsPath)
         {
-           return windowsPath.Replace("C:", "");
+            return windowsPath.Replace("C:", "");
         }
 
         private void KillRedis()
         {
-            powerShellScriptExecutor.RunBashCommand("-c \"killall redis-server\"");
+            Task.Factory.StartNew(() =>
+                bashScriptExecutor.ExecuteScript("-c \"killall redis-server\"")).ContinueWith((r) =>
+                {
+                    return;
+                });
         }
 
 
@@ -118,9 +167,9 @@ namespace MLocalRun
             {
                 txt_RedisPath.Text = configJson.GetValue("pathToRedis").ToString();
             }
-        
-           // txt_RedisPath.Text = "/home/vds/redis-5.0.4/utils";
-             lbl_repoError.Visible = false;         
+
+            // txt_RedisPath.Text = "/home/vds/redis-5.0.4/utils";
+            lbl_repoError.Visible = false;
         }
 
         private void txt_RdbPath_TextChanged(object sender, EventArgs e)

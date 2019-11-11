@@ -100,6 +100,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BashScriptExecutor.cs" />
     <Compile Include="ChooseRedisIndex.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -112,6 +113,7 @@
     <Compile Include="GetGitRepo.Designer.cs">
       <DependentUpon>GetGitRepo.cs</DependentUpon>
     </Compile>
+    <Compile Include="IScriptExecutor.cs" />
     <Compile Include="JsonHelper.cs" />
     <Compile Include="PipelineExecutor.cs" />
     <Compile Include="PowerShellScriptExecutor.cs" />
@@ -124,6 +126,7 @@
     <Compile Include="SetupRedis.Designer.cs">
       <DependentUpon>SetupRedis.cs</DependentUpon>
     </Compile>
+    <Compile Include="Utils.cs" />
     <EmbeddedResource Include="ChooseRedisIndex.resx">
       <DependentUpon>ChooseRedisIndex.cs</DependentUpon>
     </EmbeddedResource>
@@ -146,6 +149,7 @@
     <None Include="configuration.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="MLocalRun_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

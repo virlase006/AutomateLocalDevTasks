@@ -20,13 +20,11 @@ namespace MLocalRun
     public partial class GetGitRepo : Form
     {
         private JObject configJson;
-        private int GetGitRepoScriptResult = 0;
-        private PowerShellScriptExecutor powerShellScriptExecutor;
+        private IScriptExecutor powerShellScriptExecutor;
         public GetGitRepo(JObject jObject)
         {
             // create Powershell runspace
             configJson = jObject;
-            powerShellScriptExecutor = new PowerShellScriptExecutor(this);
             InitializeComponent();
         }
 
@@ -34,46 +32,41 @@ namespace MLocalRun
         {
             configJson["username"] = txt_gitUsername.Text;
             configJson["gitRepoPath"] = txt_gitRepoPath.Text;
-            Task task1 = Task.Factory.StartNew(() => ExecuteGetGitRepoScript());
-            Task task2 = Task.Factory.StartNew(() => GetResult()).ContinueWith((result) =>
-            {
-                bool scriptPass = EvaluatePassOrFail(GetGitRepoScriptResult, PowershellConstants.ScriptStage.GetGitRepo);
-                if (scriptPass)
-                {
-                    SetupRedis();
-                }
-                else
-                {
-                    DialogResult userAction = MessageBox.Show("Get git repo failed. Make sure you dont have any uncommit changes. Click Try Again to force checkout or cancel and save changes before checkout.", "Git checkout failed", MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Error);
-                    if (userAction == DialogResult.Abort)
-                    {
-                        GetGitRepoScriptResult = 0;
-                        return;
-                    }
-                    else if (userAction == DialogResult.Ignore)
-                    {
-                        SetupRedis();
-                    }
-                    else if (userAction == DialogResult.Retry)
-                    {
-                        GetGitRepoScriptResult = 0;
-                        button2_Click(sender, e);
-                    }
-                }
+            Task.Factory.StartNew(()=> 
+                ExecuteGetGitRepoScript()
+            ).ContinueWith((result)=> {
+
+               
+                bool scriptPass = EvaluatePassOrFail(result.Result, Utils.ScriptStage.GetGitRepo);
+                PostScriptActions(sender, e, scriptPass);
             });
-
-
+            
 
         }
 
-        private int GetResult()
+        private void PostScriptActions(object sender, EventArgs e, bool scriptPass)
         {
-            while (GetGitRepoScriptResult == 0)
+            if (scriptPass)
             {
-                Thread.Sleep(5000);
-                GetGitRepoScriptResult = powerShellScriptExecutor.GetResult();
+                SetupRedis();
             }
-            return GetGitRepoScriptResult;
+            else
+            {
+                DialogResult userAction = MessageBox.Show("Get git repo failed. Make sure you dont have any uncommit changes. Click Try Again to force checkout or cancel and save changes before checkout.", "Git checkout failed", MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Error);
+                if (userAction == DialogResult.Abort)
+                {
+                    return;
+                }
+                else if (userAction == DialogResult.Ignore)
+                {
+                    SetupRedis();
+                }
+                else if (userAction == DialogResult.Retry)
+                {
+
+                    button2_Click(sender, e);
+                }
+            }
         }
 
         private void SetupRedis()
@@ -92,24 +85,27 @@ namespace MLocalRun
 
         }
 
-        private void ExecuteGetGitRepoScript()
+        private int ExecuteGetGitRepoScript()
         {
-            var script = @"../../../Scripts/GetGitRepo.ps1";
             var parameters = GetGitRepoScriptParams();
-            powerShellScriptExecutor.ExecutePowerShellScript(script, this, parameters, txt_powershellOutput);
+            powerShellScriptExecutor = new PowerShellScriptExecutor(this, txt_powershellOutput, parameters);
+            var script = @"../../../Scripts/GetGitRepo.ps1";
+            return  Task.Factory.StartNew(()=>powerShellScriptExecutor.ExecuteScript(script)).ContinueWith((result)=> {
+                return result.Result;
+            }).Result;
         }
 
-        private bool EvaluatePassOrFail(int getGitScriptResult, PowershellConstants.ScriptStage stage)
+        private bool EvaluatePassOrFail(int getGitScriptResult, Utils.ScriptStage stage)
         {
-            if (stage == PowershellConstants.ScriptStage.GetGitRepo)
+            if (stage == Utils.ScriptStage.GetGitRepo)
             {
-                return ((getGitScriptResult == Convert.ToInt32(PowershellConstants.GetGitRepoResponseCodes.ExistingRepoCheckoutSucceed))
-                    || (getGitScriptResult == Convert.ToInt32(PowershellConstants.GetGitRepoResponseCodes.NewRepoCheckoutSucceed))) ? true : false;
+                return ((getGitScriptResult == Convert.ToInt32(Utils.GetGitRepoResponseCodes.ExistingRepoCheckoutSucceed))
+                    || (getGitScriptResult == Convert.ToInt32(Utils.GetGitRepoResponseCodes.NewRepoCheckoutSucceed))) ? true : false;
 
             }
             else
             {
-                return true;
+                return false;
             }
 
 
@@ -175,7 +171,7 @@ namespace MLocalRun
 
         private void btn_GitRepoBrowse_Click(object sender, EventArgs e)
         {
-            txt_gitRepoPath.Text = PowershellConstants.OpenFolderDailogAndGetPath();
+            txt_gitRepoPath.Text = Utils.OpenFolderDailogAndGetPath();
         }
 
 

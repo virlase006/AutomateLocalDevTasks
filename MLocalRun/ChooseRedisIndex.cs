@@ -17,17 +17,13 @@ namespace MLocalRun
     public partial class ChooseRedisIndex : Form
     {
         JObject configJson;
-        PowerShellScriptExecutor powerShellScriptExecutor;
+        IScriptExecutor powerShellScriptExecutor;
         List<string> RedisIndexs;
-        String GitRepo = "";
-
-        public int SetupElasticSearchScriptResult { get; private set; }
-
+        String GitRepo = "";    
         public ChooseRedisIndex(List<string> keyspaces, JObject configJson)
         {
             this.configJson = configJson;
             GitRepo = configJson["gitRepoPath"].ToString();
-            powerShellScriptExecutor = new PowerShellScriptExecutor(this);
             RedisIndexs = keyspaces;
             InitializeComponent();
         }
@@ -54,49 +50,46 @@ namespace MLocalRun
             configJson["pathToElasticsearch"] = txt_PathToElasticSearch.Text;
             var selectedDb = RedisIndexs.ElementAt(comboBox1.SelectedIndex);
             var dbIndex = selectedDb.Substring(2, 1);
-            Task task1 = Task.Factory.StartNew(() => ExecuteSetupElasticSearchScript(dbIndex));
-            Task task2 = Task.Factory.StartNew(() => GetResult()).ContinueWith((result)=> {
-                if (result.Result == 1)
-                {
-                    DialogResult userAction = MessageBox.Show("Setup compelete. Do you want to save the new configuration? ", "Done", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
-                    if (userAction == DialogResult.Yes)
-                    {
-                        JsonHelper jsonHelper = new JsonHelper();
-                        jsonHelper.WriteJsonFile(ConfigurationManager.AppSettings.Get("jsonFile").ToString(), configJson);
-                    }
-                    else 
-                    {
-                        this.Invoke((MethodInvoker)delegate
-                        {
-
-                            this.Close();
-                        });
-
-                    }
-                }
-                else 
-                {
-                    MessageBox.Show("Something went wrong", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            });
+            Task.Factory.StartNew(()=> ExecuteSetupElasticSearchScript(dbIndex)).ContinueWith((r)=> {
+                PostScriptActions(r.Result);
+            });                       
         }
 
-        private int GetResult()
+        private void PostScriptActions(int result)
         {
-            while (SetupElasticSearchScriptResult == 0)
+            if (result == 1)
             {
-                Thread.Sleep(1000);
-                SetupElasticSearchScriptResult = powerShellScriptExecutor.GetResult();
-            }
-            return SetupElasticSearchScriptResult;
-        }
+                DialogResult userAction = MessageBox.Show("Setup compelete. Do you want to save the new configuration? ", "Done", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+                if (userAction == DialogResult.Yes)
+                {
+                    JsonHelper jsonHelper = new JsonHelper();
+                    jsonHelper.WriteJsonFile(ConfigurationManager.AppSettings.Get("jsonFile").ToString(), configJson);
+                }
+                else
+                {
+                    this.Invoke((MethodInvoker)delegate
+                    {
 
-        private void ExecuteSetupElasticSearchScript(string dbIndex)
+                        this.Close();
+                    });
+
+                }
+            }
+            else
+            {
+                MessageBox.Show("Something went wrong", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+      
+        private int ExecuteSetupElasticSearchScript(string dbIndex)
         {
             var script = @"../../../Scripts/SetupElasticSearch.ps1";
             var parameters = GetElasticSearchScriptParams(dbIndex);
-            powerShellScriptExecutor.ExecutePowerShellScript(script, this, parameters, txt_powershellOutput);
-
+            powerShellScriptExecutor = new PowerShellScriptExecutor(this, txt_powershellOutput, parameters);
+            return Task.Factory.StartNew(()=> powerShellScriptExecutor.ExecuteScript(script)).ContinueWith((r)=> {
+                return r.Result;
+            }).Result;           
+             
         }
 
         private List<KeyValuePair<string,string>> GetElasticSearchScriptParams(string dbIndex)
@@ -111,7 +104,7 @@ namespace MLocalRun
 
         private void button2_Click(object sender, EventArgs e)
         {
-            txt_PathToElasticSearch.Text = PowershellConstants.OpenFolderDailogAndGetPath();
+            txt_PathToElasticSearch.Text = Utils.OpenFolderDailogAndGetPath();
         }
     }
 }

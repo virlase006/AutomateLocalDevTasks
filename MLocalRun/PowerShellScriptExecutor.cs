@@ -12,120 +12,68 @@ using System.Windows.Forms;
 
 namespace MLocalRun
 {
-    class PowerShellScriptExecutor
+    class PowerShellScriptExecutor: IScriptExecutor
     {
         //ISynchronizeInvoke Invoker;
         int result;
-        bool shouldReturn = false;
+        private bool shouldReturn;
         RichTextBox OutputTextBox;
         StringBuilder Output ;
-        public PowerShellScriptExecutor(ISynchronizeInvoke invoker)
+        ISynchronizeInvoke Invoker;
+        List<KeyValuePair<string, string>> Parameters { get; set; }
+        public PowerShellScriptExecutor(ISynchronizeInvoke invoker, RichTextBox outputTextBox, List<KeyValuePair<string, string>> parameters)
         {
-
+            Invoker = invoker;
+            OutputTextBox = outputTextBox;
             runSpace = RunspaceFactory.CreateRunspace();
-            // open it
+            Parameters = parameters;           
             runSpace.Open();
         }
+
         static private Runspace runSpace;
-        public string RunBashCommand(string command)
-        {
-            shouldReturn = false;
-            Output = new StringBuilder();
-            
-            Task.Factory.StartNew(() => RunProcess(command));
-           return  Task.Factory.StartNew(() => GetResponseString()).ContinueWith((result) =>
-            {
-                return result;
-            }).Result.Result;
-           
-           
-
-        }
-
-        private string GetResponseString()
-        {
-            while (!shouldReturn)
-            {
-                Thread.Sleep(1000);
-            }
-            return Output.ToString();
-        }
-
-        private void RunProcess(string command)
-        {
-            ProcessStartInfo info = new ProcessStartInfo(@"C:\Windows\System32\bash.exe")
-            {
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                UseShellExecute = false,
-                CreateNoWindow = true,
-            };
-            info.Arguments = command;
-            var proc = new Process
-            {
-                StartInfo = info,
-
-
-            };
-            proc.EnableRaisingEvents = true;
-
-
-            proc.ErrorDataReceived += Proc_ErrorDataReceived;
-            proc.OutputDataReceived += Proc_OutputDataReceived;
-            proc.Start();
-            proc.BeginOutputReadLine();
-            proc.BeginErrorReadLine();
-            proc.Exited += Proc_Exited;
-        }
-
-        private void Proc_Exited(object sender, EventArgs e)
-        {
-
-            shouldReturn = true;
-        }
-
-        private void Proc_OutputDataReceived(object sender, DataReceivedEventArgs e)
-        {
-            Output.AppendLine(e.Data);
-        }
-
-        private void Proc_ErrorDataReceived(object sender, DataReceivedEventArgs e)
-        {
-            if (!String.IsNullOrEmpty(e.Data)) 
-            {
-                Output.AppendLine("ERROR" + e.Data);
-
-                ((Process)sender).Kill();
-            }
-            
-        }
-
+     
         /// <summary>
         /// The active PipelineExecutor instance
         /// </summary>
         private PipelineExecutor pipelineExecutor;
-        public void ExecutePowerShellScript(string script, ISynchronizeInvoke invoker, List<KeyValuePair<string, string>> parameters, RichTextBox outputTextBox)
-        {
 
+        public int ExecuteScript(string script, List<KeyValuePair<string, string>> parameters)
+        {
+            this.Parameters = parameters;
+            return ExecuteScript(script);
+        }
+        public int ExecuteScript(string script)
+        {
             result = 0;
-            OutputTextBox = outputTextBox;
-            //   OutputTextBox.AppendText("Starting script... \n");
+            shouldReturn = false;
+
+            Task.Factory.StartNew(() => RunProcess(script));
+            return Task.Factory.StartNew(() => GetResult()).ContinueWith((res) =>
+               {
+                   return result = res.Result;
+               }).Result;
+                    
+        }
+
+        private void RunProcess(string script)
+        {
             Command command = new Command(script);
-            foreach (var param in parameters)
+            foreach (var param in this.Parameters)
             {
                 command.Parameters.Add(param.Key, param.Value);
             }
-            pipelineExecutor = new PipelineExecutor(runSpace, invoker, command);
+            pipelineExecutor = new PipelineExecutor(runSpace, Invoker, command);
             pipelineExecutor.OnDataReady += new PipelineExecutor.DataReadyDelegate(pipelineExecutor_OnDataReady);
             pipelineExecutor.OnDataEnd += new PipelineExecutor.DataEndDelegate(pipelineExecutor_OnDataEnd);
             pipelineExecutor.OnOutputReady += new PipelineExecutor.ErrorReadyDelegate(pipelineExecutor_OnOutputReady);
             pipelineExecutor.Start();
-
         }
+
         private void pipelineExecutor_OnDataEnd(PipelineExecutor sender)
         {
             if (sender.Pipeline.PipelineStateInfo.State == PipelineState.Failed)
             {
+                shouldReturn = true;
                 result = -1;
                 OutputTextBox.AppendText(string.Format("Error in script: {0}", sender.Pipeline.PipelineStateInfo.Reason));
             }
@@ -134,6 +82,7 @@ namespace MLocalRun
 
                 var allOutputs = OutputTextBox.Text.Split('\n');
                 result = Convert.ToInt32(allOutputs[allOutputs.Length - 2]);
+                shouldReturn = true;
             }
 
         }
@@ -156,6 +105,10 @@ namespace MLocalRun
 
         public int GetResult()
         {
+            while (!shouldReturn)
+            {
+                Thread.Sleep(1000);
+            }
             return result;
         }
     }
