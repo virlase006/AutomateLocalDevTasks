@@ -119,7 +119,6 @@
     <Compile Include="PowerShellScriptExecutor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PowershellConstants.cs" />
     <Compile Include="SetupRedis.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -163,9 +162,10 @@
     <None Include="Scripts\CopyRedisFile.sh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Scripts\GetFrom.ps1">
+    <None Include="Scripts\CopyRedisFile.ps1">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+
     <None Include="Scripts\GetGitRepo.ps1">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
