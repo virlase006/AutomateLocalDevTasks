@@ -117,7 +117,7 @@
             // lbl_chooseGit
             // 
             this.lbl_chooseGit.AutoSize = true;
-            this.lbl_chooseGit.Location = new System.Drawing.Point(27, 97);
+            this.lbl_chooseGit.Location = new System.Drawing.Point(47, 93);
             this.lbl_chooseGit.Name = "lbl_chooseGit";
             this.lbl_chooseGit.Size = new System.Drawing.Size(110, 13);
             this.lbl_chooseGit.TabIndex = 12;
@@ -125,7 +125,7 @@
             // 
             // btn_GitRepoBrowse
             // 
-            this.btn_GitRepoBrowse.Location = new System.Drawing.Point(357, 87);
+            this.btn_GitRepoBrowse.Location = new System.Drawing.Point(533, 90);
             this.btn_GitRepoBrowse.Name = "btn_GitRepoBrowse";
             this.btn_GitRepoBrowse.Size = new System.Drawing.Size(75, 23);
             this.btn_GitRepoBrowse.TabIndex = 13;
@@ -135,9 +135,9 @@
             // 
             // txt_gitRepoPath
             // 
-            this.txt_gitRepoPath.Location = new System.Drawing.Point(180, 90);
+            this.txt_gitRepoPath.Location = new System.Drawing.Point(223, 90);
             this.txt_gitRepoPath.Name = "txt_gitRepoPath";
-            this.txt_gitRepoPath.Size = new System.Drawing.Size(154, 20);
+            this.txt_gitRepoPath.Size = new System.Drawing.Size(304, 20);
             this.txt_gitRepoPath.TabIndex = 14;
             this.txt_gitRepoPath.TextChanged += new System.EventHandler(this.txt_gitRepoPath_TextChanged);
             // 
@@ -173,7 +173,7 @@
             this.txt_powershellOutput.TabIndex = 17;
             this.txt_powershellOutput.Text = "";
             // 
-            // Form1
+            // GetGitRepo
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -186,7 +186,7 @@
             this.Controls.Add(this.lbl_chooseGit);
             this.Controls.Add(this.check_DoYouHaveGit);
             this.Controls.Add(this.label3);
-            this.Name = "Form1";
+            this.Name = "GetGitRepo";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();

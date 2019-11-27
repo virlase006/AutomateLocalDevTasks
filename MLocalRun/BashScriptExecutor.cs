@@ -90,13 +90,8 @@ namespace MLocalRun
 
             };
             proc.EnableRaisingEvents = true;
-
-
             proc.ErrorDataReceived += Proc_ErrorDataReceived;
             proc.OutputDataReceived += Proc_OutputDataReceived;
-            
-           
-
             proc.Exited += Proc_Exited;
             proc.Start();
             proc.BeginOutputReadLine();

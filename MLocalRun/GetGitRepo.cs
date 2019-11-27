@@ -31,7 +31,15 @@ namespace MLocalRun
         private void button2_Click(object sender, EventArgs e)
         {
             configJson["username"] = txt_gitUsername.Text;
-            configJson["gitRepoPath"] = txt_gitRepoPath.Text;
+            if (check_DoYouHaveGit.Checked == true)
+            {
+                configJson["gitRepoPath"] = txt_gitRepoPath.Text;
+            }
+            else
+            {
+                configJson["gitRepoPath"] = txt_gitRepoPath.Text.Contains("stylelabs.m") ? txt_gitRepoPath.Text : txt_gitRepoPath.Text + "\\stylelabs.m";
+
+            }
             Task.Factory.StartNew(()=> 
                 ExecuteGetGitRepoScript()
             ).ContinueWith((result)=> {
@@ -78,7 +86,9 @@ namespace MLocalRun
                 var redisSetup = new SetupRedis(configJson);
                 // redisSetup.Closed += (s, args) => this.Close();
                 redisSetup.Show();
-                redisSetup.StartPosition = this.StartPosition;
+                redisSetup.StartPosition = FormStartPosition.Manual;
+                redisSetup.Location = this.Location;
+                redisSetup.Size = this.Size;
                 this.Hide();
             });
 

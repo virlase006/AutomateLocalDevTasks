@@ -28,11 +28,7 @@ Write-Host "New Repo"
 git clone "https://$USERNAME@bitbucket.org/stylelabsdev/stylelabs.m.git"
 cd stylelabs.m
 git checkout $VERSION -f
-IF([string]::IsNullOrEmpty($Output))
-{
-return -2
-exit;
-}
+
 git pull
 return 2
 exit;

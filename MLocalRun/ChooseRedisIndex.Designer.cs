@@ -40,7 +40,7 @@
             // comboBox1
             // 
             this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(300, 113);
+            this.comboBox1.Location = new System.Drawing.Point(209, 116);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(299, 21);
             this.comboBox1.TabIndex = 0;
@@ -48,7 +48,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(157, 116);
+            this.label1.Location = new System.Drawing.Point(65, 116);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(102, 13);
             this.label1.TabIndex = 1;
@@ -66,17 +66,17 @@
             // 
             // txt_powershellOutput
             // 
-            this.txt_powershellOutput.Location = new System.Drawing.Point(160, 302);
+            this.txt_powershellOutput.Location = new System.Drawing.Point(68, 304);
             this.txt_powershellOutput.Name = "txt_powershellOutput";
             this.txt_powershellOutput.ReadOnly = true;
-            this.txt_powershellOutput.Size = new System.Drawing.Size(494, 86);
+            this.txt_powershellOutput.Size = new System.Drawing.Size(531, 86);
             this.txt_powershellOutput.TabIndex = 3;
             this.txt_powershellOutput.Text = "";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(160, 190);
+            this.label2.Location = new System.Drawing.Point(65, 185);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(107, 13);
             this.label2.TabIndex = 4;
@@ -84,14 +84,14 @@
             // 
             // txt_PathToElasticSearch
             // 
-            this.txt_PathToElasticSearch.Location = new System.Drawing.Point(300, 182);
+            this.txt_PathToElasticSearch.Location = new System.Drawing.Point(209, 184);
             this.txt_PathToElasticSearch.Name = "txt_PathToElasticSearch";
             this.txt_PathToElasticSearch.Size = new System.Drawing.Size(299, 20);
             this.txt_PathToElasticSearch.TabIndex = 5;
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(628, 182);
+            this.button2.Location = new System.Drawing.Point(524, 185);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 23);
             this.button2.TabIndex = 6;
@@ -103,7 +103,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(673, 450);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.txt_PathToElasticSearch);
             this.Controls.Add(this.label2);

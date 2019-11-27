@@ -77,16 +77,17 @@ namespace MLocalRun
                 {
                     SafeWriteTextBox(txt_powershellOutput,"\n Killing running instance of redis");
                     KillRedis();
-                    string redisFilePathParsed = ParseWindowsPathToBashPath(txt_RdbPath.Text);
-                    var command = ExtractAndParseBashCommand(redisFilePathParsed);
-                    Task.Factory.StartNew(() => bashScriptExecutor.ExecuteScript(command)).ContinueWith((r) =>
-                    {
-
-                        ProcessOutput(SafeReadTextBox(txt_powershellOutput));
-                    }
-                     );
+                   
 
                 }
+                string redisFilePathParsed = ParseWindowsPathToBashPath(txt_RdbPath.Text);
+                var command = ExtractAndParseBashCommand(redisFilePathParsed);
+                Task.Factory.StartNew(() => bashScriptExecutor.ExecuteScript(command)).ContinueWith((r) =>
+                {
+
+                    ProcessOutput(SafeReadTextBox(txt_powershellOutput));
+                }
+                 );
             });
 
 
@@ -132,6 +133,9 @@ namespace MLocalRun
                 // close the form on the forms thread
 
                 var chooseRedis = new ChooseRedisIndex(dbIndexes, configJson);
+                chooseRedis.StartPosition = FormStartPosition.Manual;
+                chooseRedis.Location = this.Location;
+                chooseRedis.Size = this.Size;
                 chooseRedis.Show();              
                 this.Hide();
             });
