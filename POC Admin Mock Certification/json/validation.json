@@ -101,6 +101,39 @@
         "show_in_flyoutview": true,
         "panel_detail_page": "Overview"
       }
+    },
+    {
+      "member_group": "General",
+      "property": "AssetMediaToAsset",
+      "isRelation": true,
+      "associated_definition": "M.AssetMedia",
+      "value": {
+        "required": false,
+        "conditional": false,
+        "source": "mock_implementation_data",
+        "editable": true,
+        "bulk_editable": false,
+        "bulk_edit_in_table": false,
+        "facet_enabled": true,
+        "facet_config": {
+          "name": "M.AssetMedia",
+          "type": "definition",
+          "position": "left.vertical",
+          "definition": null,
+          "haslimit": false,
+          "sorting": "alphabetical",
+          "direction": "ascending",
+          "apply_grouping": false,
+          "multi_select": true
+        },
+        "fulltext_searchable": true,
+        "show_in_advanced_search": false,
+        "autocomplete": false,
+        "show_in_tableview": false,
+        "show_in_listview": false,
+        "show_in_flyoutview": false,
+        "panel_detail_page": "Overview"
+      }
     }
   ]
 }

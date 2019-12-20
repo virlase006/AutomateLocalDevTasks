@@ -248,8 +248,7 @@ namespace Mock.Implementation
             return isValid;
         }
 
-
-        public static async Task<bool> ValidatePresenceInAdvancedSearchAsync(IWebMClient client, Validation prop)
+        private static async Task<bool> ValidatePresenceInAdvancedSearchAsync(IWebMClient client, Validation prop)
         {
             const string whatIsBeingValidated = "Show in Advanced Search";
             var propertyName = prop.PropertyName;
@@ -270,34 +269,38 @@ namespace Mock.Implementation
             var properties = settings.SelectToken(Constants.Pages.Assets.SearchComponent.Settings.QueryQuilder).Children(); // returns an array
             var propertyQueryFilter =  prop.IsRelation? prop.AssociatedDefinition: prop.PropertyName;
             var property = properties.SingleOrDefault(x => x.SelectToken("name").Value<string>() == propertyQueryFilter);
-            var associatedDefinition = prop.IsRelation? property.SelectToken("type") : property.SelectToken("definition");
-            var associatedDefinitionFound = associatedDefinition.Value<string>();
+            bool isValid = (property == null && !prop.Config.ShowInAdvancedSearch) || (property != null && prop.Config.ShowInAdvancedSearch);
             if (property == null)
             {
                 new SCLogger
                 {
                     Type = LogType.VALIDATION,
                     About = whatIsBeingValidated,
-                    Passed = false,
-                    Reason = new List<string> { String.Format("Property \"{0}\" not found.", propertyName) },
+                    Passed = isValid,
+                    Reason = new List<string> { isValid? "": String.Format("Property \"{0}\" not found.", propertyName) },
                     ExpectedConfiguration = prop,
                     Message = JsonConvert.SerializeObject(properties, Formatting.Indented)
                 }.Info();
-                return false;
-            } else 
-            if (prop.IsRelation && (associatedDefinition != null && associatedDefinitionFound != "definition"))
+                return isValid;
+            } else
             {
-                new SCLogger
+                var associatedDefinition = prop.IsRelation ? property.SelectToken("type") : property.SelectToken("definition");
+                var associatedDefinitionFound = associatedDefinition.Value<string>();
+                if (prop.IsRelation && (associatedDefinition != null && associatedDefinitionFound != "definition"))
                 {
-                    Type = LogType.VALIDATION,
-                    About = whatIsBeingValidated,
-                    Passed = false,
-                    Reason = new List<string> { String.Format("Property \"{0}\" was found but was nopt a relation.", propertyName) },
-                    Message = "This is unacceptable.",
-                    ExpectedConfiguration = prop
-                }.Info();
-                return false;
+                    new SCLogger
+                    {
+                        Type = LogType.VALIDATION,
+                        About = whatIsBeingValidated,
+                        Passed = false,
+                        Reason = new List<string> { String.Format("Property \"{0}\" was found but was nopt a relation.", propertyName) },
+                        Message = "This is unacceptable.",
+                        ExpectedConfiguration = prop
+                    }.Info();
+                    return false;
+                }
             }
+            
 
             var logger = new SCLogger
             {
@@ -311,8 +314,8 @@ namespace Mock.Implementation
             logger.Info();
             return true;
         }
-
-        public static async Task<bool> ValidatePresenceInAssetMassEditTableAsync(IWebMClient client, Validation prop)
+        
+        private static async Task<bool> ValidatePresenceInAssetMassEditTableAsync(IWebMClient client, Validation prop)
         {
             var massEditTable = await client.Querying.SingleAsync(new Query 
             {
@@ -339,8 +342,8 @@ namespace Mock.Implementation
             logger.Info();
             return isValid;                                
         }
-
-        public static async Task<bool> ValidateIfPropertyIsDisplayedInSearchComponentAsync(IWebMClient client, Validation prop, string viewName = "table")
+        
+        private static async Task<bool> ValidateIfPropertyIsDisplayedInSearchComponentAsync(IWebMClient client, Validation prop, string viewName = "table")
         {
             bool isValid = false;
             var settings = await GetSearchComponentSettingsAsync(client);
