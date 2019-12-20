@@ -30,7 +30,7 @@ namespace Mock.Implementation
         {
             if (MyLogger == null)
             {
-                MyLogger = NLog.LogManager.GetCurrentClassLogger();
+                MyLogger = NLog.LogManager.GetLogger("validation");
             }
             return MyLogger;
         }

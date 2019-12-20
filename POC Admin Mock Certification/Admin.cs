@@ -325,13 +325,13 @@ namespace Mock.Implementation
                 && (massEditTableProperty.SelectToken("read_only") == null                   // property MIGHT BE editable in the table
                 || massEditTableProperty.SelectToken("read_only").Value<bool>() == false);   // property is editable in the table ...
 
-            isValid = isValid == prop.Config.BulkEditInTable; // ... but is this what we were expecting ??
+            isValid = (isValid == prop.Config.BulkEditInTable); // ... but is this what we were expecting ??
             var logger = new SCLogger
             {
                 Type = LogType.VALIDATION,
                 About = "Editable in MassEdit Table",
-                Passed = isValid == prop.Config.BulkEditInTable,
-                Reason = new List<string> { String.Format("Property {0} not found or is read-only.", prop.PropertyName) },
+                Passed = isValid,
+                Reason = new List<string> { isValid? "": String.Format("Property {0} not found or is read-only.", prop.PropertyName) },
                 Message = isValid ? "" : string.Format("Expected Configuration:           {0}\n", JsonConvert.SerializeObject(prop, Formatting.Indented))
                 + (isValid ? "" : string.Format("Actual Facet list:             {0}", JsonConvert.SerializeObject(massEditTableProperty, Formatting.Indented))),
                 ExpectedConfiguration = prop

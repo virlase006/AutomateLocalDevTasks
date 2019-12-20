@@ -7,7 +7,15 @@
 
   <ItemGroup>
     <PackageReference Include="NLog" Version="4.6.8" />
+    <PackageReference Include="NLog.Config" Version="4.6.8" />
+    <PackageReference Include="NLog.Schema" Version="4.6.8" />
     <PackageReference Include="Stylelabs.M.Sdk.WebClient" Version="3.2.101" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

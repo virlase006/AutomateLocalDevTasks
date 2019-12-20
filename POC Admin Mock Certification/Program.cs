@@ -28,7 +28,7 @@ namespace Certification.Demo
             // await RunPoC(await Connect()).ContinueWith(x => { Console.ReadKey(); } );
             var client = await Connect();
             // read JSON directly from a file
-            var snitch = GetAssetValidationConfiguration(client, @"C:\Users\adom\source\repos\autocert\json\validation.json");
+            var snitch = GetAssetValidationConfiguration(client, @"..\..\..\json\validation.json");
             await Admin.ValidateAssetDeifinition(client, police: snitch);
             Console.ReadKey();
         }
