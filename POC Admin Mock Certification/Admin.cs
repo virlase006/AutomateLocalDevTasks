@@ -62,28 +62,28 @@ namespace Mock.Implementation
                 ActualConfiguration = p, // JSON 
                 ExpectedConfiguration = prop,
                 Message = JsonConvert.SerializeObject(failures)
-            }; 
+            };
             logger.Info();
 
             Console.WriteLine("[VALIDATION][{0}][{1}] The attributes test", isValid ? "PASS" : "FAIL", prop.PropertyName);
-            
+
             return JsonConvert.SerializeObject(failures);
         }
 
         private static string CheckRelationAttributes(IMemberGroup group, Validation prop)
         {
-            var p = (RelationDefinition) group.MemberDefinitions.Single(x => x.Name == prop.PropertyName);
+            var p = (RelationDefinition)group.MemberDefinitions.Single(x => x.Name == prop.PropertyName);
             var val = prop.Config;
             var mandatoryCheck = (p.ChildIsMandatory || p.ParentIsMandatory) == val.Required;
             var conditionalCheck = p.IsConditional == val.Conditional;
-            var editableCheck = p.AllowUpdates == val.Editable;
+            //var editableCheck = p.AllowUpdates == val.Editable; // 3.2.0
 
             var failures = new List<string>();
             if (!mandatoryCheck) { failures.Add("Required"); }
             if (!conditionalCheck) { failures.Add("Conditional"); }
-            if (!editableCheck) { failures.Add("Editable"); }
+            //if (!editableCheck) { failures.Add("Editable"); } // 3.2.0
 
-            bool isValid = mandatoryCheck && conditionalCheck && editableCheck;
+            bool isValid = mandatoryCheck && conditionalCheck; // && editableCheck; // 3.2.0
 
             new VLogger<RelationDefinition>
             {
@@ -102,7 +102,7 @@ namespace Mock.Implementation
 
         private static async Task<bool> ValidateAssetPropertiesAsync(AssetValidationConfiguration police, IWebMClient client)
         {
-            foreach(Validation prop in police.PropertyValidations)
+            foreach (Validation prop in police.PropertyValidations)
             {
 
                 string potentialErrorMessage = String.Format("[EXCEPTION][VALIDATION][PROPERTY(\"{1}\")] property {0}.isRelation was wrongfully set to {2}. This is unacceptable.", prop.PropertyName, nameof(prop.IsRelation), prop.IsRelation);
@@ -126,7 +126,7 @@ namespace Mock.Implementation
                 {
                     try
                     {
-                        CheckMemberAttributes(group, prop); 
+                        CheckMemberAttributes(group, prop);
                         bool advancedSearchCheck = await ValidatePresenceInAdvancedSearchAsync(client, prop);
                     }
                     catch (InvalidCastException e)
@@ -210,7 +210,7 @@ namespace Mock.Implementation
             {
                 throw new ArgumentNullException("FacetConfig", "The validation.json file: Facet of type \"property\" encountered but \"definition\" was not set. This is unacceptable.");
             }
-            
+
             var facet = facets.SingleOrDefault(f => f.Name == facetConfig.Name && f.Definition == f.Definition);
 
             if (facet == null && !config.FacetEnabled)
@@ -241,7 +241,7 @@ namespace Mock.Implementation
                 Type = LogType.VALIDATION,
                 About = "Facet enabled",
                 Passed = isValid,
-                Reason = new List<string> { isValid? "": "Facet was not enabled." },
+                Reason = new List<string> { isValid ? "" : "Facet was not enabled." },
                 Message = isValid ? "" : string.Format("Expected Configuration:           {0}\n", JsonConvert.SerializeObject(prop, Formatting.Indented))
                 + (isValid ? "" : string.Format("Actual Facet list:             {0}", JsonConvert.SerializeObject(facets, Formatting.Indented)))
             }.Info();
@@ -254,7 +254,7 @@ namespace Mock.Implementation
             var propertyName = prop.PropertyName;
             var definition = prop.AssociatedDefinition;
             var settings = await GetSearchComponentSettingsAsync(client);
-            if(settings == null)
+            if (settings == null)
             {
                 new SCLogger
                 {
@@ -267,7 +267,7 @@ namespace Mock.Implementation
                 return false;
             }
             var properties = settings.SelectToken(Constants.Pages.Assets.SearchComponent.Settings.QueryQuilder).Children(); // returns an array
-            var propertyQueryFilter =  prop.IsRelation? prop.AssociatedDefinition: prop.PropertyName;
+            var propertyQueryFilter = prop.IsRelation ? prop.AssociatedDefinition : prop.PropertyName;
             var property = properties.SingleOrDefault(x => x.SelectToken("name").Value<string>() == propertyQueryFilter);
             bool isValid = (property == null && !prop.Config.ShowInAdvancedSearch) || (property != null && prop.Config.ShowInAdvancedSearch);
             if (property == null)
@@ -277,12 +277,13 @@ namespace Mock.Implementation
                     Type = LogType.VALIDATION,
                     About = whatIsBeingValidated,
                     Passed = isValid,
-                    Reason = new List<string> { isValid? "": String.Format("Property \"{0}\" not found.", propertyName) },
+                    Reason = new List<string> { isValid ? "" : String.Format("Property '{0}' not found.", propertyName) },
                     ExpectedConfiguration = prop,
-                    Message = JsonConvert.SerializeObject(properties, Formatting.Indented)
+                    Message = String.Format("\nAdvanced searchable properties:\n {0}", JsonConvert.SerializeObject(properties, Formatting.Indented))
                 }.Info();
                 return isValid;
-            } else
+            }
+            else
             {
                 var associatedDefinition = prop.IsRelation ? property.SelectToken("type") : property.SelectToken("definition");
                 var associatedDefinitionFound = associatedDefinition.Value<string>();
@@ -293,14 +294,14 @@ namespace Mock.Implementation
                         Type = LogType.VALIDATION,
                         About = whatIsBeingValidated,
                         Passed = false,
-                        Reason = new List<string> { String.Format("Property \"{0}\" was found but was nopt a relation.", propertyName) },
+                        Reason = new List<string> { String.Format("Property \"{0}\" was found but was not a relation.", propertyName) },
                         Message = "This is unacceptable.",
                         ExpectedConfiguration = prop
                     }.Info();
                     return false;
                 }
             }
-            
+
 
             var logger = new SCLogger
             {
@@ -314,10 +315,10 @@ namespace Mock.Implementation
             logger.Info();
             return true;
         }
-        
+
         private static async Task<bool> ValidatePresenceInAssetMassEditTableAsync(IWebMClient client, Validation prop)
         {
-            var massEditTable = await client.Querying.SingleAsync(new Query 
+            var massEditTable = await client.Querying.SingleAsync(new Query
             {
                 Filter = new IdentifierQueryFilter { Value = Constants.Pages.Assets.MassEditTable }
             });
@@ -334,15 +335,15 @@ namespace Mock.Implementation
                 Type = LogType.VALIDATION,
                 About = "Editable in MassEdit Table",
                 Passed = isValid,
-                Reason = new List<string> { isValid? "": String.Format("Property {0} not found or is read-only.", prop.PropertyName) },
+                Reason = new List<string> { isValid ? "" : String.Format(prop.Config.BulkEditInTable ? "Property {0} not found or is read-only." : "Property {0} was mass editable in table.", prop.PropertyName) },
                 Message = isValid ? "" : string.Format("Expected Configuration:           {0}\n", JsonConvert.SerializeObject(prop, Formatting.Indented))
-                + (isValid ? "" : string.Format("Actual Facet list:             {0}", JsonConvert.SerializeObject(massEditTableProperty, Formatting.Indented))),
+                + (isValid ? "" : string.Format("Mass edit table:             {0}", JsonConvert.SerializeObject(columns, Formatting.Indented))),
                 ExpectedConfiguration = prop
             };
             logger.Info();
-            return isValid;                                
+            return isValid;
         }
-        
+
         private static async Task<bool> ValidateIfPropertyIsDisplayedInSearchComponentAsync(IWebMClient client, Validation prop, string viewName = "table")
         {
             bool isValid = false;
@@ -351,7 +352,7 @@ namespace Mock.Implementation
                                                                   // select the specified view element
             var token = JToken.FromObject(prop).SelectToken("value");
             string p = string.Format("show_in_{0}view", viewName);
-            var nice = token.SelectToken(p) ;
+            var nice = token.SelectToken(p);
             var shouldBeShown = nice.Value<bool>();
 
             if (settings != null)
@@ -377,9 +378,9 @@ namespace Mock.Implementation
                     About = string.Format("Show in {0}view", viewName),
                     Passed = isValid,
                     ExpectedConfiguration = prop,
-                    Reason = new List<string>{ isValid ? "" : String.Format("Property {0} not found or is read-only.", prop.PropertyName) },
+                    Reason = new List<string> { isValid ? "" : String.Format("Property {0} not found in {1}view.", prop.PropertyName, viewName) },
                     Message = isValid ? "" : string.Format("Expected Configuration:           {0}\n", JsonConvert.SerializeObject(prop, Formatting.Indented))
-                             + (isValid ? "" : string.Format("Actual Views list:             {0}", JsonConvert.SerializeObject(views, Formatting.Indented)))
+                             + (isValid ? "" : string.Format("Actual fields in {0}view:             {1}", viewName, JsonConvert.SerializeObject(fields, Formatting.Indented)))
                 };
 
                 logger.Info();
@@ -406,10 +407,7 @@ namespace Mock.Implementation
             {
                 Filter = new IdentifierQueryFilter
                 {
-                    Values = new List<string>
-                        {
-                            Constants.Pages.Assets.SearchComponent.Identifier, "8jeuUNT-DUieX_g9dwZC7A"
-                        }
+                    Value = Constants.Pages.Assets.SearchComponent.Identifier
                 }
             });
             return comp;

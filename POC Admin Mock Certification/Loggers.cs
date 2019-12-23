@@ -53,8 +53,8 @@ namespace Mock.Implementation
                 "{" + ExpectedConfiguration.PropertyName + "} - " + About,
                 Passed ? "PASSED" : "FAILED",
                 Passed ? "":JsonConvert.SerializeObject(Reason),
-                //JsonConvert.SerializeObject(ExpectedConfiguration, Formatting.Indented),
-                //JsonConvert.SerializeObject(ActualConfiguration, Formatting.Indented)
+                Passed ? "": JsonConvert.SerializeObject(ExpectedConfiguration, Formatting.Indented),
+                Passed ? "": JsonConvert.SerializeObject(ActualConfiguration, Formatting.Indented)
             };
         }
 
