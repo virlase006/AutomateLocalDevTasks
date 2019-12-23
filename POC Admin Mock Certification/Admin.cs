@@ -76,14 +76,14 @@ namespace Mock.Implementation
             var val = prop.Config;
             var mandatoryCheck = (p.ChildIsMandatory || p.ParentIsMandatory) == val.Required;
             var conditionalCheck = p.IsConditional == val.Conditional;
-            //var editableCheck = p.AllowUpdates == val.Editable; // 3.2.0
+            var editableCheck = p.AllowUpdates == val.Editable; // 3.2.0
 
             var failures = new List<string>();
             if (!mandatoryCheck) { failures.Add("Required"); }
             if (!conditionalCheck) { failures.Add("Conditional"); }
-            //if (!editableCheck) { failures.Add("Editable"); } // 3.2.0
+            if (!editableCheck) { failures.Add("Editable"); } // 3.2.0
 
-            bool isValid = mandatoryCheck && conditionalCheck; // && editableCheck; // 3.2.0
+            bool isValid = mandatoryCheck && conditionalCheck && editableCheck; // 3.2.0
 
             new VLogger<RelationDefinition>
             {
