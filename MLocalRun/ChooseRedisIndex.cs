@@ -74,7 +74,9 @@ namespace MLocalRun
                     });
 
                 }
-            }
+                MessageBox.Show("Thank you for using this tool", "Closing the tool", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Application.Exit();
+      }
             else
             {
                 MessageBox.Show("Something went wrong", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -106,5 +108,11 @@ namespace MLocalRun
         {
             txt_PathToElasticSearch.Text = Utils.OpenFolderDailogAndGetPath();
         }
+
+    private void txt_powershellOutput_TextChanged(object sender, EventArgs e)
+    {
+      txt_powershellOutput.SelectionStart = txt_powershellOutput.Text.Length;
+      txt_powershellOutput.ScrollToCaret();
     }
+  }
 }

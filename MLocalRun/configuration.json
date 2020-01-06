@@ -1,6 +1,6 @@
 {
-  "gitRepoPath": "C:\\Users\\virs\\Desktop\\test22\\stylelabs.m",
-  "username": "virlla",
-  "pathToRedis": "/home/vds/redis-5.0.4/utils",
-  "pathToElasticsearch": "C:\\Users\\virs\\Downloads\\elasticsearch\\elasticsearch"
+  "gitRepoPath": "C:\\Stylelabs\\repo\\stylelabs.m",
+  "username": "stylelabs_jda",
+  "pathToRedis": "/home/jda/redis-stable/src",
+  "pathToElasticsearch": "C:\\elasticsearch"
 }

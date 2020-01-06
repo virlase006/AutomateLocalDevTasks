@@ -135,7 +135,7 @@ namespace MLocalRun
                 var chooseRedis = new ChooseRedisIndex(dbIndexes, configJson);
                 chooseRedis.StartPosition = FormStartPosition.Manual;
                 chooseRedis.Location = this.Location;
-                chooseRedis.Size = this.Size;
+                //chooseRedis.Size = this.Size;
                 chooseRedis.Show();              
                 this.Hide();
             });
@@ -196,5 +196,16 @@ namespace MLocalRun
                 }
             }
         }
+
+    private void button1_Click(object sender, EventArgs e)
+    {
+      txt_RdbPath.Text = Utils.OpenFileAndGetPath("rdb");
     }
+
+    private void txt_powershellOutput_TextChanged(object sender, EventArgs e)
+    {
+      txt_powershellOutput.SelectionStart = txt_powershellOutput.Text.Length;
+      txt_powershellOutput.ScrollToCaret();
+    }
+  }
 }

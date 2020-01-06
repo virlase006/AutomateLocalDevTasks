@@ -21,6 +21,10 @@ namespace MLocalRun
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new GetGitRepo(configJson));
+
+            //Application.Run(new SetupRedis(configJson));
+            //List<string> keyspaces = new List<string>();
+            //Application.Run(new ChooseRedisIndex(keyspaces, configJson));
         }
     }
 }

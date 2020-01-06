@@ -1,1 +1,1 @@
-﻿bash -c "cd PathToRedis ; rm dump.rdb -f  ; cp /mnt/cBashPath PathToRedis/dump.rdb ; cd PathToRedis ; redis-server --daemonize yes"
+﻿bash -c "cd PathToRedis ; rm dump.rdb -f  ; cp /mnt/cBashPath PathToRedis/dump.rdb ; cd PathToRedis ; ./redis-server --daemonize yes"

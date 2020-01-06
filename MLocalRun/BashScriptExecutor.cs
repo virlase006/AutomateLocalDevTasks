@@ -60,16 +60,24 @@ namespace MLocalRun
 
         private void Proc_ErrorDataReceived(object sender, DataReceivedEventArgs e)
         {
-            if (!String.IsNullOrEmpty(e.Data))
-            {
-                OutputTextBox.Invoke((MethodInvoker)delegate
-                {
+      try
+      {
+        if (!String.IsNullOrEmpty(e.Data))
+        {
+          OutputTextBox.Invoke((MethodInvoker)delegate
+          {
 
-                    OutputTextBox.AppendText("\n" + e.Data);
-                });
+            OutputTextBox.AppendText("\n" + e.Data);
+          });
 
-                ((Process)sender).Kill();
-            }
+          //((Process)sender).Kill();
+        }
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(ex.Message);
+        throw;
+      }
 
         }
 

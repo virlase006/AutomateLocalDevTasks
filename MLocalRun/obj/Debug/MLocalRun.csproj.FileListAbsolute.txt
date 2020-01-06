@@ -43,3 +43,25 @@ C:\Users\adv\source\repos\vdsGitHub\AutomateLocalDevTasks\MLocalRun\obj\Debug\ML
 C:\Users\adv\source\repos\vdsGitHub\AutomateLocalDevTasks\MLocalRun\obj\Debug\MLocalRun.pdb
 C:\Users\adv\source\repos\vdsGitHub\AutomateLocalDevTasks\MLocalRun\bin\Debug\Newtonsoft.Json.dll
 C:\Users\adv\source\repos\vdsGitHub\AutomateLocalDevTasks\MLocalRun\bin\Debug\Newtonsoft.Json.xml
+C:\Stylelabs\other projects\AutomateLocalDevTasks\MLocalRun\bin\Debug\configuration.json
+C:\Stylelabs\other projects\AutomateLocalDevTasks\MLocalRun\bin\Debug\Scripts\CopyRedisFile.sh
+C:\Stylelabs\other projects\AutomateLocalDevTasks\MLocalRun\bin\Debug\Scripts\CopyRedisFile.ps1
+C:\Stylelabs\other projects\AutomateLocalDevTasks\MLocalRun\bin\Debug\Scripts\GetGitRepo.ps1
+C:\Stylelabs\other projects\AutomateLocalDevTasks\MLocalRun\bin\Debug\Scripts\SetupElasticSearch.ps1
+C:\Stylelabs\other projects\AutomateLocalDevTasks\MLocalRun\bin\Debug\MLocalRun.exe.config
+C:\Stylelabs\other projects\AutomateLocalDevTasks\MLocalRun\bin\Debug\MLocalRun.exe
+C:\Stylelabs\other projects\AutomateLocalDevTasks\MLocalRun\bin\Debug\MLocalRun.pdb
+C:\Stylelabs\other projects\AutomateLocalDevTasks\MLocalRun\bin\Debug\Newtonsoft.Json.dll
+C:\Stylelabs\other projects\AutomateLocalDevTasks\MLocalRun\bin\Debug\System.Management.Automation.dll
+C:\Stylelabs\other projects\AutomateLocalDevTasks\MLocalRun\bin\Debug\Microsoft.Management.Infrastructure.dll
+C:\Stylelabs\other projects\AutomateLocalDevTasks\MLocalRun\bin\Debug\Newtonsoft.Json.xml
+C:\Stylelabs\other projects\AutomateLocalDevTasks\MLocalRun\bin\Debug\System.Management.Automation.xml
+C:\Stylelabs\other projects\AutomateLocalDevTasks\MLocalRun\obj\Debug\MLocalRun.ChooseRedisIndex.resources
+C:\Stylelabs\other projects\AutomateLocalDevTasks\MLocalRun\obj\Debug\MLocalRun.GetGitRepo.resources
+C:\Stylelabs\other projects\AutomateLocalDevTasks\MLocalRun\obj\Debug\MLocalRun.Properties.Resources.resources
+C:\Stylelabs\other projects\AutomateLocalDevTasks\MLocalRun\obj\Debug\MLocalRun.SetupRedis.resources
+C:\Stylelabs\other projects\AutomateLocalDevTasks\MLocalRun\obj\Debug\MLocalRun.csproj.GenerateResource.cache
+C:\Stylelabs\other projects\AutomateLocalDevTasks\MLocalRun\obj\Debug\MLocalRun.csproj.CopyComplete
+C:\Stylelabs\other projects\AutomateLocalDevTasks\MLocalRun\obj\Debug\MLocalRun.exe
+C:\Stylelabs\other projects\AutomateLocalDevTasks\MLocalRun\obj\Debug\MLocalRun.pdb
+C:\Stylelabs\other projects\AutomateLocalDevTasks\MLocalRun\obj\Debug\MLocalRun.csprojAssemblyReference.cache
