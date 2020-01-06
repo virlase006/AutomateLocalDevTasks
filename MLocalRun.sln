@@ -5,16 +5,30 @@ VisualStudioVersion = 16.0.29411.108
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MLocalRun", "MLocalRun\MLocalRun.csproj", "{C6AB6444-49A9-4AF0-84DE-405CEABE47D4}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E13F9F25-DB48-4031-AAFD-BA905EFAE5E2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{C6AB6444-49A9-4AF0-84DE-405CEABE47D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C6AB6444-49A9-4AF0-84DE-405CEABE47D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6AB6444-49A9-4AF0-84DE-405CEABE47D4}.Debug|x64.ActiveCfg = Debug|x64
+		{C6AB6444-49A9-4AF0-84DE-405CEABE47D4}.Debug|x64.Build.0 = Debug|x64
+		{C6AB6444-49A9-4AF0-84DE-405CEABE47D4}.Debug|x86.ActiveCfg = Debug|x86
+		{C6AB6444-49A9-4AF0-84DE-405CEABE47D4}.Debug|x86.Build.0 = Debug|x86
 		{C6AB6444-49A9-4AF0-84DE-405CEABE47D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C6AB6444-49A9-4AF0-84DE-405CEABE47D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6AB6444-49A9-4AF0-84DE-405CEABE47D4}.Release|x64.ActiveCfg = Release|x64
+		{C6AB6444-49A9-4AF0-84DE-405CEABE47D4}.Release|x64.Build.0 = Release|x64
+		{C6AB6444-49A9-4AF0-84DE-405CEABE47D4}.Release|x86.ActiveCfg = Release|x86
+		{C6AB6444-49A9-4AF0-84DE-405CEABE47D4}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
